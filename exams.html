@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الاختبارات والتقييمات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:slnt,wght@-1,1000&display=swap" rel="stylesheet">
+<style>
+body {
+    font-family: 'Cairo', sans-serif;
+    background: #f0f4f8;
+    margin: 0;
+    padding: 20px;
+}
+h1 { text-align: center; color: #2c3e50; margin-bottom: 30px; }
+.exam-list { display: flex; flex-direction: column; gap: 15px; max-width: 700px; margin: auto; }
+.exam-item {
+    background: #fff; border-radius: 12px; padding: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1); cursor: pointer;
+    transition: 0.3s;
+}
+.exam-item:hover { box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+.exam-item h2 { margin: 0 0 5px 0; color: #2980b9; }
+.exam-item p { margin: 2px 0; color: #555; }
+
+#examDetails { max-width: 700px; margin: 20px auto; background: #fff; border-radius: 12px; padding: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); display: none; }
+#examDetails h2 { color: #2980b9; margin-top: 0; }
+.question { margin-bottom: 15px; }
+.question label { font-weight: bold; display: block; margin-bottom: 5px; }
+textarea, input[type="text"], select { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc; margin-bottom: 5px; box-sizing: border-box; }
+button.submit-btn { background: #27ae60; color: #fff; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; width: 100%; }
+button.submit-btn:hover { background: #1e8449; }
+</style>
+</head>
+<body>
+
+<h1>الاختبارات والتقييمات</h1>
+<div class="exam-list" id="examList"></div>
+
+<div id="examDetails"></div>
+
+<script>
+// الطالب الحالي
+const currentUser = localStorage.getItem('currentUser') || 'user01';
+let exams = JSON.parse(localStorage.getItem('exams')||'[]');
+let studentAnswers = JSON.parse(localStorage.getItem('studentAnswers')||'{}');
+
+function displayExams() {
+    const list = document.getElementById('examList');
+    list.innerHTML = '';
+    exams.forEach((exam,i)=>{
+        // تحقق إذا الطالب حل الامتحان سابقاً
+        const solved = studentAnswers[currentUser]?.[i]?.submitted;
+        const div = document.createElement('div');
+        div.className = 'exam-item';
+        div.innerHTML = `<h2>${exam.name}</h2>
+            <p>التاريخ: ${exam.date}</p>
+            <p>الساعة: ${exam.time}</p>
+            <p>مدة الامتحان: ${exam.duration} دقيقة</p>
+            <p>${solved ? '✅ تم الحل' : '🔒 لم يتم الحل'}</p>`;
+        div.onclick = ()=> openExam(i);
+        list.appendChild(div);
+    });
+}
+
+function openExam(index){
+    const exam = exams[index];
+    const container = document.getElementById('examDetails');
+    container.style.display = 'block';
+    container.innerHTML = `<h2>${exam.name}</h2>`;
+    let answers = studentAnswers[currentUser]?.[index]?.answers || [];
+    let html = '';
+    exam.questions.forEach((q,j)=>{
+        html += `<div class="question">
+            <label>السؤال ${j+1}: ${q.q}</label>`;
+        if(q.type === 'mcq'){
+            q.opts.forEach(opt=>{
+                html += `<label><input type="radio" name="q${j}" value="${opt}" ${answers[j]===opt?'checked':''}> ${opt}</label>`;
+            });
+        } else {
+            html += `<textarea id="q${j}">${answers[j]||''}</textarea>`;
+        }
+        html += `</div>`;
+    });
+    html += `<button class="submit-btn" onclick="submitExam(${index})">إرسال الإجابات</button>`;
+    container.innerHTML += html;
+}
+
+function submitExam(index){
+    const exam = exams[index];
+    let answers = [];
+    exam.questions.forEach((q,j)=>{
+        if(q.type==='mcq'){
+            let selected = document.querySelector(`input[name="q${j}"]:checked`);
+            answers.push(selected?selected.value:'');
+        } else {
+            answers.push(document.getElementById(`q${j}`).value.trim());
+        }
+    });
+    if(!studentAnswers[currentUser]) studentAnswers[currentUser]={};
+    studentAnswers[currentUser][index] = {answers, submitted: true};
+    localStorage.setItem('studentAnswers', JSON.stringify(studentAnswers));
+    alert('تم إرسال الإجابات! يمكنك الآن عرض نتيجتك من صفحة النتائج.');
+    displayExams();
+    document.getElementById('examDetails').style.display='none';
+}
+
+displayExams();
+</script>
+</body>
+</html>

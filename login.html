@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ar">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Badeen+Display&family=Rakkas&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Badeen+Display&family=Kufam:ital,wght@0,400..900;1,400..900&family=Rakkas&display=swap" rel="stylesheet">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تسجيل الدخول</title>
+<link rel="stylesheet" href="vcx.css">
+</head>
+<body>
+<div class="container">
+<h2>تسجيل الدخول</h2>
+<input type="text" id="user" placeholder="اسم المستخدم">
+
+<div style="position:relative;">
+<input type="password" id="pass" placeholder="كلمة المرور">
+<h1 class="iio">مركز سيبويه </h1> 
+
+</div>
+
+<button onclick="login()">دخول</button>
+<div id="msg"></div>
+</div>
+
+<script>
+const users = {
+    "user01": { pass: "4567+" },
+  "user02": { pass: "lio2" },
+  "user03": { pass: "12345" },
+  "user04": { pass: "Bq5!Lw7@Hp" },
+  "user05": { pass: "Cx9$Nb3!Rt" },
+  "user06": { pass: "Zt2!Fk8#Ws" },
+  "user07": { pass: "Jm6#Qp4@Ve" },
+  "user08": { pass: "Rx1!Tg5$Ko" },
+  "user09": { pass: "Hp7@Wc2#Yd" },
+  "user10": { pass: "Vb3$Mn9!Qs" },
+  
+  "user11": { pass: "Gk8#Rt1@Lp" },
+  "user12": { pass: "Ty4@Qz6!Uv" },
+  "user13": { pass: "Pm9$Hs3!Kd" },
+  "user14": { pass: "Wc2!Bn8#Xq" },
+  "user15": { pass: "Lr5#Vt7@Ga" },
+  "user16": { pass: "Sn1!Jp4$Qe" },
+  "user17": { pass: "Df6$Rw3!Ko" },
+  "user18": { pass: "Qa7@Zx9#Ip" },
+  "user19": { pass: "Ub3$Ty8!Vc" },
+  "user20": { pass: "Km4!Hs2#Qw" },
+  
+  "user21": { pass: "Rn9#Wx1@Lo" },
+  "user22": { pass: "Zb6$Mq4!Jp" },
+  "user23": { pass: "Ct8!Hv3#Zr" },
+  "user24": { pass: "Yk1@Df5$Ps" },
+  "user25": { pass: "Xw7#Bg2!Mq" },
+  "user26": { pass: "Je3!Qn6$Vt" },
+  "user27": { pass: "Ho9$Lp1!Xs" },
+  "user28": { pass: "Ua4!Kv8#Rt" },
+  "user29": { pass: "Fn5#Rx3@Wp" },
+  "user30": { pass: "Tb2@Jm7$Qc" },
+  
+  "user31": { pass: "Zp6!Ot9#Fa" },
+  "user32": { pass: "Qe1@Cn8$Jr" },
+  "user33": { pass: "Vs3#Xp5!Mw" },
+  "user34": { pass: "Mn4$Rt6@Kv" },
+  "user35": { pass: "Ky8@Hb2#Qp" },
+  "user36": { pass: "Wg7#Ld1!Ft" },
+  "user37": { pass: "Ap5!Zq3$Jn" },
+  "user38": { pass: "Hc2@Mv6#Xr" },
+  "user39": { pass: "Lj9$Fk4!So" },
+  "user40": { pass: "Gt1!Qd5#Bw" },
+  
+  "user41": { pass: "Dw3$Nz7@Vp" },
+  "user42": { pass: "Kp8@Ws1#Mf" },
+  "user43": { pass: "Xc6#Tb9!Qe" },
+  "user44": { pass: "Ro4!Hn2$Jx" },
+  "user45": { pass: "Sf7$Bk3!Tp" },
+  "user46": { pass: "Ym1@Ld8#Fw" },
+  "user47": { pass: "Jr5!Vg2$Qx" },
+  "user48": { pass: "Hp9$Cx4@Ts" },
+  "user49": { pass: "Bw6#Kf1!Mo" },
+  "user50": { pass: "Zt3!Rp7$Vy" }
+
+};
+
+function login() {
+  const u = document.getElementById("user").value.trim();
+  const p = document.getElementById("pass").value.trim();
+  const msg = document.getElementById("msg");
+  
+  if(users[u] && users[u].pass === p){
+    localStorage.setItem("currentUser", u);
+    window.location.href = "dashboard.html"; // كل الطلاب يروحوا لصفحتهم
+  } else {
+    msg.textContent = "البيانات غلط!";
+  }
+}
+
+// رؤية الباسورد
+document.querySelector(".togglePass").addEventListener("click", function(){
+  const passInput = document.getElementById("pass");
+  passInput.type = passInput.type === "password" ? "text" : "password";
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>كتب الطالب</title>
+<style>
+body {font-family:'Arial',sans-serif;background:#f0f4f8;margin:0;padding:20px;display:flex;flex-direction:column;align-items:center;}
+h2{font-size:28px;color:#2c3e50;margin-bottom:30px;text-align:center;}
+.books-wrapper{display:flex;flex-direction:column;align-items:center;width:100%;}
+.book-card{
+  width:80%;max-width:800px;background:#fff;border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 5px 12px rgba(0,0,0,0.08);
+}
+.book-card h3{margin:0 0 8px 0;font-size:22px;color:#2980b9;}
+.book-card p{margin:3px 0;font-size:15px;color:#555;}
+.book-card a, .book-card button{
+  display:inline-block;margin-top:10px;margin-right:10px;padding:8px 14px;border-radius:6px;text-decoration:none;font-size:15px;border:none;cursor:pointer;
+}
+.book-card a{background:#2980b9;color:#fff;}
+.book-card a:hover{background:#1c5980;}
+.book-card button{background:#27ae60;color:#fff;}
+.book-card button:hover{background:#1e8449;}
+
+.later-btn{background:#8e44ad !important;}
+.pay-btn{background:#e67e22 !important;}
+</style>
+</head>
+<body>
+<h2>الكتب والملازم الخاصة بك</h2>
+<div class="books-wrapper" id="booksContainer"></div>
+
+<script>
+// جلب الطالب الحالي
+const currentUser = localStorage.getItem('currentUser') || 'user01';
+
+// جلب الكتب
+const userPurchases = JSON.parse(localStorage.getItem('purchases')||'{}');
+
+// قائمة السمو
+const smuList = JSON.parse(localStorage.getItem("smuList") || "[]");
+
+function loadBooks(){
+  const container=document.getElementById('booksContainer');
+  const books=JSON.parse(localStorage.getItem('books')||'[]');
+  container.innerHTML='';
+  books.forEach((b,i)=>{
+    const card=document.createElement('div');
+    card.className='book-card';
+    
+    let purchased = userPurchases[currentUser]?.includes(i) || false;
+    let actionBtns = '';
+
+    // مجاني
+    if(b.type==='مجاني'){
+      actionBtns = `
+        <a href="${b.pdf}" target="_blank">مشاهدة PDF</a>
+        <a href="${b.pdf}" download="${b.filename}">تحميل PDF</a>`;
+    }
+
+    // مدفوع - لم يُشترى بعد
+    else if(b.type==='مدفوع' && !purchased){
+      actionBtns = `
+        <button class="pay-btn" onclick="buyNow(${i})">شراء الآن</button>
+        <button class="later-btn" onclick="laterPay(${i})">الدفع على فاتورة الشهر القادم</button>
+      `;
+    }
+
+    // مدفوع - تم الشراء أو الدفع لاحقاً
+    else if(purchased){
+      actionBtns = `
+        <a href="${b.pdf}" target="_blank">مشاهدة PDF</a>
+        <a href="${b.pdf}" download="${b.filename}">تحميل PDF</a>`;
+    }
+
+    card.innerHTML = `
+      <h3>${b.name}</h3>
+      <p>تاريخ النشر: ${b.date}</p>
+      <p>الساعة: ${b.time}</p>
+      <p>نوع الكتاب: ${b.type||'غير محدد'}</p>
+      ${actionBtns}
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+// شراء الآن — يروح لصفحة الدفع
+function buyNow(i){
+  const books = JSON.parse(localStorage.getItem("books"));
+  const b = books[i];
+
+  let invoice = {
+    id: "INV" + Date.now(),
+    book: b.name,
+    price: b.price,
+    date: new Date().toLocaleString(),
+    user: currentUser
+  };
+
+  localStorage.setItem("currentInvoice", JSON.stringify(invoice));
+  window.location.href = "payment.html"; // صفحة الدفع
+}
+
+// الدفع لاحقاً — إضافة اسم الطالب لقائمة السمو
+function laterPay(i){
+  const studentName = prompt("من فضلك اكتب اسمك بالكامل للتسجيل في الدفع اللاحق:");
+
+  if(!studentName){
+    alert("لازم تكتب الاسم يا معلم");
+    return;
+  }
+
+  const books = JSON.parse(localStorage.getItem("books"));
+  const b = books[i];
+
+  smuList.push({
+    student: studentName,
+    user: currentUser,
+    book: b.name,
+    price: b.price,
+    time: new Date().toLocaleString(),
+    status: "دفع لاحقاً"
+  });
+
+  localStorage.setItem("smuList", JSON.stringify(smuList));
+
+  // تسجيل الكتاب للطالب
+  const purchases = JSON.parse(localStorage.getItem('purchases')||'{}');
+  if(!purchases[currentUser]) purchases[currentUser] = [];
+  purchases[currentUser].push(i);
+  localStorage.setItem("purchases", JSON.stringify(purchases));
+
+  alert("تم تسجيلك على الفاتورة القادمة ✔");
+  loadBooks();
+}
+
+window.onload=loadBooks;
+</script>
+</body>
+</html>

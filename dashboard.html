@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:slnt,wght@-1,1000&display=swap" rel="stylesheet">
+<title>لوحة الطالب</title>
+<style>
+html{
+    overflow-x: hidden;
+}
+body {
+    font-family:'Cairo',sans-serif;
+    background:#f0f4f8;
+    margin:0;
+    padding:20px;
+    overflow-x: hidden;
+}
+.dashboard h1 {
+    text-align:center;
+    color:#2c3e50;
+    margin-bottom:30px;
+}
+.section-link {
+    border-radius:15px;
+    height:80px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.15);
+    width:100%;
+    margin-bottom:30px;
+    background:#fff;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    padding:0 20px;
+    transition:0.3s;
+    text-decoration:none;
+}
+.section-link:hover {
+    box-shadow:0 8px 20px rgba(0,0,0,0.25);
+}
+.section-link img {
+    width:80px;
+    margin-right:20px;
+}
+.section-link h2 {
+    font-size:24px;
+    margin:0;
+    color:#2980b9;
+}
+.xxcv{
+    position: relative;
+    left: 18px;
+}
+
+.dashboard{
+    position: relative;
+    right: 18px;
+}
+</style>
+</head>
+<body>
+<div class="dashboard">
+<h1 class="xxcv" id="welcome">مرحبا بالطالب</h1>
+
+<a class="section-link" id="booksLink" href="#" target="_self">
+    <img src="https://i.top4top.io/p_3611vwxu90.png" alt="">
+    <h2>الكتب والملازم</h2>
+</a>
+
+<a class="section-link" id="certLink" href="#" target="_self">
+    <img src="https://b.top4top.io/p_36119w7x40.png" alt="">
+    <h2>الشهادات والاجازات</h2>
+</a>
+
+<a class="section-link" id="gradesLink" href="#" target="_self">
+    <img src="https://f.top4top.io/p_36114nk2k0.png" alt="">
+    <h2>الاختبارات والتقييمات</h2>
+</a>
+
+<a class="section-link" id="invoicesLink" href="#" target="_self">
+    <img src="https://c.top4top.io/p_3611v5tvh0.png" alt="">
+    <h2>فواتير الشراء والمصاريف</h2>
+</a>
+
+<a class="section-link" id="sxcc" href="#" target="_self">
+    <img src="https://a.top4top.io/p_36130srw70.png" alt="">
+    <h2>المحاضرات المسجلة</h2>
+</a>
+
+</div>
+
+<script>
+// جلب اسم الطالب الحالي
+const currentUser = localStorage.getItem('currentUser') || 'user01';
+
+// عرض اسمه في الترحيب
+document.getElementById('welcome').textContent = `مرحبا بالطالب ${currentUser}`;
+
+// ربط كل خانة بالصفحات الخاصة بها
+document.getElementById('booksLink').href = 'mko.html';          // صفحة الكتب والملازم
+document.getElementById('certLink').href = 'certificates.html'; // صفحة الشهادات والاجازات
+document.getElementById('gradesLink').href = 'exams.html';      // صفحة الاختبارات والتقييمات
+document.getElementById('invoicesLink').href = 'invoices.html'; // صفحة الفواتير
+document.getElementById('sxcc').href = 'mosgala.html'; // صفحة الفواتير
+
+</script>
+</body>
+</html>
